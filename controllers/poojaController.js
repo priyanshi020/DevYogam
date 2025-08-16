@@ -3,7 +3,7 @@ const poojaService = require('../services/poojaService');
 class PoojaController {
   async create(req, res) {
     try {
-      const pooja = await poojaService.createPooja(req.body);
+      const pooja = await poojaService.createPooja(req.body,req.files);
       res.status(201).json(pooja);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -31,7 +31,7 @@ class PoojaController {
 
   async update(req, res) {
     try {
-      const pooja = await poojaService.updatePooja(req.params.id, req.body);
+      const pooja = await poojaService.updatePooja(req.params.id, req.body,req.files);
       if (!pooja) return res.status(404).json({ message: 'Pooja not found' });
       res.json(pooja);
     } catch (error) {

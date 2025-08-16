@@ -3,7 +3,7 @@ const templeService = require('../services/templeService');
 class TempleController {
   async create(req, res) {
     try {
-      const temple = await templeService.createTemple(req.body);
+       const temple = await templeService.createTemple(req.body, req.files);
       res.status(201).json(temple);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -31,7 +31,7 @@ class TempleController {
 
   async update(req, res) {
     try {
-      const temple = await templeService.updateTemple(req.params.id, req.body);
+      const temple = await templeService.updateTemple(req.params.id, req.body,req.files);
       if (!temple) return res.status(404).json({ message: 'Temple not found' });
       res.json(temple);
     } catch (error) {

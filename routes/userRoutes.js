@@ -125,4 +125,49 @@ router.put('/:id', userController.updateUser);
  */
 router.delete('/:id', userController.deleteUser);
 
+/**
+ * @swagger
+ * /api/users/admin/login:
+ *   post:
+ *     summary: Admin login with email and password
+ *     tags: [Auth]
+ *     requestBody:
+ *       description: Admin login credentials
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: admin@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: admin123
+ *     responses:
+ *       200:
+ *         description: Login successful, returns JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       401:
+ *         description: Invalid credentials or not an admin
+ */
+router.post("/admin/login", userController.adminLogin);
+
+
 module.exports = router;

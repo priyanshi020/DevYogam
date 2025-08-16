@@ -1,6 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const templeController = require('../controllers/templeController');
+const templeController = require("../controllers/templeController");
+const multer = require("multer");
+// const upload = require("../middleware/upload"); 
+const upload = multer({ dest: "uploads/" }); 
 
 /**
  * @swagger
@@ -11,40 +14,50 @@ const templeController = require('../controllers/templeController');
 
 /**
  * @swagger
- * /api/temples:
- *   post:
- *     summary: Create a new temple
- *     tags: [Temples]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               location:
- *                 type: string
- *               bhagwan:
- *                 type: string
- *                 description: Which god temple is it
- *               templeDescription:
- *                 type: string
- *               longDescription:
- *                 type: string
- *               images:
- *                 type: array
- *                 maxItems: 5
- *                 items:
- *                   type: string
- *     responses:
- *       201:
- *         description: Temple created successfully
- *       400:
- *         description: Bad request
+ * components:
+ *   schemas:
+ *     Temple:
+ *       type: object
+ *       required:
+ *         - title
+ *         - location
+ *         - bhagwan
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Auto-generated MongoDB ObjectId
+ *         title:
+ *           type: string
+ *           description: Name of the temple
+ *         location:
+ *           type: string
+ *           description: Location of the temple
+ *         bhagwan:
+ *           type: string
+ *           description: Which god the temple is dedicated to
+ *         templeDescription:
+ *           type: string
+ *           description: Short description of the temple
+ *         longDescription:
+ *           type: string
+ *           description: Detailed description of the temple
+ *         images:
+ *           type: array
+ *           maxItems: 5
+ *           items:
+ *             type: string
+ *           description: Max 5 image URLs
+ *         language:
+ *           type: string
+ *           default: english
+ *           description: Language of the temple description
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  */
-router.post('/', templeController.create);
 
 /**
  * @swagger
@@ -55,14 +68,20 @@ router.post('/', templeController.create);
  *     responses:
  *       200:
  *         description: List of temples
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Temple'
  */
-router.get('/', templeController.getAll);
+router.get("/", templeController.getAll);
 
 /**
  * @swagger
  * /api/temples/{id}:
  *   get:
- *     summary: Get a temple by ID
+ *     summary: Get temple by ID
  *     tags: [Temples]
  *     parameters:
  *       - in: path
@@ -70,20 +89,67 @@ router.get('/', templeController.getAll);
  *         required: true
  *         schema:
  *           type: string
- *         description: Temple ID
  *     responses:
  *       200:
  *         description: Temple details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Temple'
  *       404:
  *         description: Temple not found
  */
-router.get('/:id', templeController.getById);
+router.get("/:id", templeController.getById);
+
+/**
+ * @swagger
+ * /api/temples:
+ *   post:
+ *     summary: Create a new temple (with up to 5 images)
+ *     tags: [Temples]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               bhagwan:
+ *                 type: string
+ *               templeDescription:
+ *                 type: string
+ *               longDescription:
+ *                 type: string
+ *               language:
+ *                 type: string
+ *                 enum: [english, hindi]
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Upload up to 5 temple images
+ *     responses:
+ *       201:
+ *         description: Temple created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Temple'
+ *       400:
+ *         description: Validation error
+ */
+router.post("/", upload.array("images", 5), templeController.create);
 
 /**
  * @swagger
  * /api/temples/{id}:
  *   put:
- *     summary: Update a temple by ID
+ *     summary: Update temple (replace metadata + optional images)
  *     tags: [Temples]
  *     parameters:
  *       - in: path
@@ -91,26 +157,49 @@ router.get('/:id', templeController.getById);
  *         required: true
  *         schema:
  *           type: string
- *         description: Temple ID
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               bhagwan:
+ *                 type: string
+ *               templeDescription:
+ *                 type: string
+ *               longDescription:
+ *                 type: string
+ *               language:
+ *                 type: string
+ *                 enum: [english, hindi]
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Upload up to 5 temple images
  *     responses:
  *       200:
- *         description: Updated temple details
+ *         description: Temple updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Temple'
  *       404:
  *         description: Temple not found
  */
-router.put('/:id', templeController.update);
+router.put("/:id", upload.array("images", 5), templeController.update);
 
 /**
  * @swagger
  * /api/temples/{id}:
  *   delete:
- *     summary: Delete a temple by ID
+ *     summary: Delete temple
  *     tags: [Temples]
  *     parameters:
  *       - in: path
@@ -118,13 +207,12 @@ router.put('/:id', templeController.update);
  *         required: true
  *         schema:
  *           type: string
- *         description: Temple ID
  *     responses:
  *       200:
  *         description: Temple deleted successfully
  *       404:
  *         description: Temple not found
  */
-router.delete('/:id', templeController.delete);
+router.delete("/:id", templeController.delete);
 
 module.exports = router;
