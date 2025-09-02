@@ -1,53 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const benefitSchema = new mongoose.Schema(
-//   {
-//     title: {
-//       type: String,
-//       required: true,
-//     },
-//     description: {
-//       type: String,
-//       required: true,
-//     },
-//   },
-//   { _id: false }
-// );
-
-// const poojaSchema = new mongoose.Schema(
-//   {
-//     title: {
-//       type: String,
-//       equired: true,
-//     },
-//     subtitle: {
-//       type: String,
-//     },
-//     temple: {
-//       type: String,
-//       required: true,
-//     },
-//     date: {
-//       type: Date,
-//       required: true,
-//     },
-//     benefits: {
-//       type: [benefitSchema],
-//       validate: [(arr) => arr.length <= 3, "{PATH} exceeds the limit of 3"],
-//     },
-//     aboutTemple: {
-//       type: String,
-//     },
-//     images: {
-//       type: [String],
-//       validate: [(arr) => arr.length <= 5, "{PATH} exceeds the limit of 5"],
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// module.exports = mongoose.model("Pooja", poojaSchema);
-
 const mongoose = require("mongoose");
 
 const serviceBriefSchema = new mongoose.Schema(
@@ -71,28 +21,52 @@ const serviceBriefSchema = new mongoose.Schema(
 
 const poojaSchema = new mongoose.Schema(
   {
-    slug: {
-      type: String,
-      unique: true,
+    title: { type: String, required: false },
+    titleHi: { type: String, required: false },
+    subtitle: { type: String, required: false },
+    subtitleHi: { type: String, required: false },
+    location: { type: String, required: false },
+    locationHi: { type: String, required: false },
+    capDate: { type: Date, required: false },
+    logo_image: { type: String, required: false },
+    ht_logo_image: { type: String, required: false },
+    price: {
+      type: [
+        {
+          single: Number,
+          couple: Number,
+          family: Number,
+        },
+      ],
+      required: false,
     },
-    temple: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Temple",
-      required: true,
+    benefit: {
+      type: [
+        {
+          title: { type: String, required: true },
+          titleHi: { type: String, required: true },
+          description: { type: String, required: true },
+          descriptionHi: { type: String, required: true },
+        },
+      ],
+      // validate: [
+      //   (arr) => arr.length >= 1 && arr.length <= 3,
+      //   "{PATH} should have 1-3 benefits",
+      // ],
     },
-    puja_special_tag_hindi: String,
-    puja_special_tag_english: String,
-    duration_in_minutes: Number,
-    logo_image: String,
-    ht_logo_image: String,
-    start_time: Date,
-    count: Number,
-    hashtag: [String],
-    redirection_url: String,
-    service_brief: [serviceBriefSchema],
-    images: {
-      type: [String],
-      validate: [(arr) => arr.length <= 5, "{PATH} exceeds 5"],
+    faq: {
+      type: [
+        {
+          question: { type: String, required: true }, 
+          questionHi: { type: String, required: true }, 
+          answer: { type: String, required: true }, 
+          answerHi: { type: String, required: true }, 
+        },
+      ],
+      // validate: [
+      //   (arr) => arr.length >= 1 && arr.length <= 5,
+      //   "{PATH} should have 1-5 FAQs",
+      // ],
     },
   },
   { timestamps: true }

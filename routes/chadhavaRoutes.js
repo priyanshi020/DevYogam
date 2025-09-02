@@ -54,24 +54,24 @@ router.get("/:id", chadhavaController.getById);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - slug
+ *               - mandir
  *             properties:
  *               slug:
  *                 type: string
- *               mandir_id:
- *                 type: number
- *               mandir_slug:
+ *               mandir:
  *                 type: string
- *               mandir_name:
- *                 type: string
+ *                 description: Temple ObjectId
+ *               platform:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               image:
  *                 type: string
  *               start:
  *                 type: string
  *                 format: date-time
- *               platform:
- *                 type: array
- *                 items:
- *                   type: string
  *               items:
  *                 type: array
  *                 items:
@@ -84,14 +84,24 @@ router.get("/:id", chadhavaController.getById);
  *                 items:
  *                   type: object
  *                   properties:
- *                     name: { type: string }
- *                     tag: { type: string }
- *                     short_desc: { type: string }
- *                     desc: { type: string }
- *                     types: { type: string }
- *                     cta_text: { type: string }
- *                     lang_type: { type: string }
- *                     short_name: { type: string }
+ *                     name:
+ *                       type: string
+ *                     tag:
+ *                       type: string
+ *                     short_desc:
+ *                       type: string
+ *                     desc:
+ *                       type: string
+ *                     types:
+ *                       type: string
+ *                     cta_text:
+ *                       type: string
+ *                     lang_type:
+ *                       type: string
+ *                     short_name:
+ *                       type: string
+ *                     chadhava:
+ *                       type: number
  *     responses:
  *       201:
  *         description: Chadhava created successfully
@@ -115,7 +125,7 @@ router.post("/", chadhavaController.create);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             $ref: '#/components/schemas/Chadhava'
  *     responses:
  *       200:
  *         description: Updated chadhava object
