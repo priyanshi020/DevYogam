@@ -90,6 +90,10 @@ const poojaSchema = new mongoose.Schema(
     hashtag: [String],
     redirection_url: String,
     service_brief: [serviceBriefSchema],
+    images: {
+      type: [String],
+      validate: [(arr) => arr.length <= 5, "{PATH} exceeds 5"],
+    },
   },
   { timestamps: true }
 );

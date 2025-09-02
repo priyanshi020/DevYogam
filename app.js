@@ -5,6 +5,7 @@ const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const poojaRoutes = require('./routes/poojaRoutes');
 const templeRoutes = require('./routes/templeRoutes');
+const chadavaRoutes = require('./routes/chadhavaRoutes')
 require('dotenv').config();
 
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -37,6 +38,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use('/api/users', userRoutes);
 app.use('/api/poojas', poojaRoutes);
 app.use('/api/temples', templeRoutes);
+app.use('/api/chadhavas',chadavaRoutes)
 
 app.get('/', (req, res) => {
   res.send('API is running...');
