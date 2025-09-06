@@ -68,6 +68,14 @@ const poojaSchema = new mongoose.Schema(
       //   "{PATH} should have 1-5 FAQs",
       // ],
     },
+    images: {
+      type: [String],
+      validate: [(arr) => arr.length <= 5, "{PATH} exceeds 5"],
+    },
+    images_hi: {
+      type: [String],
+      validate: [(arr) => arr.length <= 5, "{PATH} exceeds 5"],
+    },
   },
   { timestamps: true }
 );
