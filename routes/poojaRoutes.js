@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const poojaController = require('../controllers/poojaController');
+const poojaController = require("../controllers/poojaController");
 const multer = require("multer");
-// const upload = require('../middleware/upload'); 
-const upload = multer({ dest: "uploads/" }); 
+// const upload = require('../middleware/upload');
+const upload = multer({ dest: "uploads/" });
 
 /**
  * @swagger
@@ -44,42 +44,51 @@ const upload = multer({ dest: "uploads/" });
  *       required:
  *         - temple
  *       properties:
- *         slug:
+ *         title:
  *           type: string
- *         temple:
+ *         titleHi:
  *           type: string
- *           description: Reference to Temple ObjectId
- *         puja_special_tag_hindi:
+ *         subtitle:
  *           type: string
- *         puja_special_tag_english:
+ *         subtitleHi:
  *           type: string
- *         duration_in_minutes:
- *           type: integer
+ *         location:
+ *           type: string
+ *         locationHi:
+ *           type: string
+ *         capDate:
+ *           type: string
+ *           format: date-time
  *         logo_image:
  *           type: string
  *           format: binary
- *           description: Single logo image file
  *         ht_logo_image:
  *           type: string
  *           format: binary
- *           description: Single Hindi logo image file
+ *         price:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Price'
+ *         benefit:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Benefit'
+ *         faq:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/FAQ'
  *         images:
  *           type: array
  *           items:
  *             type: string
  *             format: binary
- *           description: Upload up to 5 images
- *         start_time:
- *           type: string
- *           format: date-time
- *         count:
- *           type: integer
- *         hashtag:
+ *           description: Upload up to 5 images (English)
+ *         images_hi:
  *           type: array
  *           items:
  *             type: string
- *         redirection_url:
- *           type: string
+ *             format: binary
+ *           description: Upload up to 5 images (Hindi)
  *         service_brief:
  *           type: array
  *           items:
@@ -105,11 +114,12 @@ const upload = multer({ dest: "uploads/" });
  *         description: Bad request
  */
 router.post(
-  '/',
+  "/",
   upload.fields([
-    { name: 'logo_image', maxCount: 1 },
-    { name: 'ht_logo_image', maxCount: 1 },
-    { name: 'images', maxCount: 5 }
+    { name: "logo_image", maxCount: 1 },
+    { name: "ht_logo_image", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+    { name: "images_hi", maxCount: 5 },
   ]),
   poojaController.create
 );
@@ -130,7 +140,7 @@ router.post(
  *               items:
  *                 $ref: '#/components/schemas/Pooja'
  */
-router.get('/', poojaController.getAll);
+router.get("/", poojaController.getAll);
 
 /**
  * @swagger
@@ -155,7 +165,7 @@ router.get('/', poojaController.getAll);
  *       404:
  *         description: Pooja not found
  */
-router.get('/:id', poojaController.getById);
+router.get("/:id", poojaController.getById);
 
 /**
  * @swagger
@@ -187,11 +197,12 @@ router.get('/:id', poojaController.getById);
  *         description: Pooja not found
  */
 router.put(
-  '/:id',
+  "/:id",
   upload.fields([
-    { name: 'logo_image', maxCount: 1 },
-    { name: 'ht_logo_image', maxCount: 1 },
-    { name: 'images', maxCount: 5 }
+    { name: "logo_image", maxCount: 1 },
+    { name: "ht_logo_image", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+    { name: "images_hi", maxCount: 5 },
   ]),
   poojaController.update
 );
@@ -215,6 +226,6 @@ router.put(
  *       404:
  *         description: Pooja not found
  */
-router.delete('/:id', poojaController.delete);
+router.delete("/:id", poojaController.delete);
 
 module.exports = router;

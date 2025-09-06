@@ -1,20 +1,27 @@
-const Temple = require('../models/Temple');
+const Temple = require("../models/Temple");
 const { uploadToImgBB } = require("./imgbbService");
 class TempleService {
- async createTemple(data, files) {
+  async createTemple(data, files) {
     try {
       let imageUrls = [];
-
-      if (files && files.length > 0) {
-        for (const file of files) {
+      let imageHiUrls = [];
+      if (files?.images?.length > 0) {
+        for (const file of files.images) {
           const url = await uploadToImgBB(file.path);
           imageUrls.push(url);
         }
       }
 
+      if (files?.images_hi?.length > 0) {
+        for (const file of files.images_hi) {
+          const url = await uploadToImgBB(file.path);
+          imageHiUrls.push(url);
+        }
+      }
       const templeData = {
         ...data,
-        images: imageUrls
+        images: imageUrls,
+        images_hi: imageHiUrls,
       };
 
       const temple = await Temple.create(templeData);
@@ -24,7 +31,6 @@ class TempleService {
     }
   }
 
-
   async getAllTemples() {
     return await Temple.find();
   }
@@ -33,26 +39,31 @@ class TempleService {
     return await Temple.findById(id);
   }
 
- async updateTemple(id, data, files) {
+  async updateTemple(id, data, files) {
     try {
       let updateData = { ...data };
 
-      if (files && files.length > 0) {
+      if (files?.images?.length > 0) {
         let imageUrls = [];
-        for (const file of files) {
+        for (const file of files.images) {
           const url = await uploadToImgBB(file.path);
           imageUrls.push(url);
         }
-
         updateData.images = imageUrls;
-
       }
 
-      const updatedTemple = await Temple.findByIdAndUpdate(
-        id,
-        updateData,
-        { new: true }
-      );
+      if (files?.images_hi?.length > 0) {
+        let imageHiUrls = [];
+        for (const file of files.images_hi) {
+          const url = await uploadToImgBB(file.path);
+          imageHiUrls.push(url);
+        }
+        updateData.images_hi = imageHiUrls;
+      }
+
+      const updatedTemple = await Temple.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
 
       return updatedTemple;
     } catch (error) {

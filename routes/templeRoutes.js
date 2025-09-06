@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const templeController = require("../controllers/templeController");
 const multer = require("multer");
-// const upload = require("../middleware/upload"); 
-const upload = multer({ dest: "uploads/" }); 
+// const upload = require("../middleware/upload");
+const upload = multer({ dest: "uploads/" });
 
 /**
  * @swagger
@@ -143,7 +143,14 @@ router.get("/:id", templeController.getById);
  *       400:
  *         description: Validation error
  */
-router.post("/", upload.array("images", 5), templeController.create);
+// router.post("/", upload.array("images", 5), templeController.create);
+router.post(
+  "/",
+  upload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "images_hi", maxCount: 5 },
+  ])
+);
 
 /**
  * @swagger
@@ -193,7 +200,14 @@ router.post("/", upload.array("images", 5), templeController.create);
  *       404:
  *         description: Temple not found
  */
-router.put("/:id", upload.array("images", 5), templeController.update);
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "images_hi", maxCount: 5 },
+  ]),
+  templeController.update
+);
 
 /**
  * @swagger

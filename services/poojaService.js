@@ -1,21 +1,28 @@
-const Pooja = require('../models/Pooja');
-const { uploadToImgBB } = require('./imgbbService');
+const Pooja = require("../models/Pooja");
+const { uploadToImgBB } = require("./imgbbService");
 
 class PoojaService {
   async createPooja(data, files) {
     try {
       let imageUrls = [];
-
-      if (files && files.length > 0) {
-        for (const file of files) {
+      let imageHiUrls = [];
+      if (files?.images?.length > 0) {
+        for (const file of files.images) {
           const url = await uploadToImgBB(file.path);
           imageUrls.push(url);
         }
       }
-
+   
+      if (files?.images_hi?.length > 0) {
+        for (const file of files.images_hi) {
+          const url = await uploadToImgBB(file.path);
+          imageHiUrls.push(url);
+        }
+      }
       const poojaData = {
         ...data,
-        images: imageUrls
+        images: imageUrls,
+        images_hi: imageHiUrls,
       };
 
       return await Pooja.create(poojaData);
@@ -36,16 +43,24 @@ class PoojaService {
     try {
       let updateData = { ...data };
 
-      if (files && files.length > 0) {
-        let imageUrls = [];
-        for (const file of files) {
-          const url = await uploadToImgBB(file.path);
-          imageUrls.push(url);
-        }
-
-        updateData.images = imageUrls;
-
+    if (files?.images?.length > 0) {
+      let imageUrls = [];
+      for (const file of files.images) {
+        const url = await uploadToImgBB(file.path);
+        imageUrls.push(url);
       }
+      updateData.images = imageUrls;
+    }
+
+    if (files?.images_hi?.length > 0) {
+      let imageHiUrls = [];
+      for (const file of files.images_hi) {
+        const url = await uploadToImgBB(file.path);
+        imageHiUrls.push(url);
+      }
+      updateData.images_hi = imageHiUrls;
+    }
+
 
       return await Pooja.findByIdAndUpdate(id, updateData, { new: true });
     } catch (error) {

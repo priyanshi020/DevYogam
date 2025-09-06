@@ -57,10 +57,10 @@ const poojaSchema = new mongoose.Schema(
     faq: {
       type: [
         {
-          question: { type: String, required: true }, 
-          questionHi: { type: String, required: true }, 
-          answer: { type: String, required: true }, 
-          answerHi: { type: String, required: true }, 
+          question: { type: String, required: true },
+          questionHi: { type: String, required: true },
+          answer: { type: String, required: true },
+          answerHi: { type: String, required: true },
         },
       ],
       // validate: [
