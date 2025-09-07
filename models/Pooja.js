@@ -33,15 +33,21 @@ const poojaSchema = new mongoose.Schema(
     price: {
       type: [
         {
-          single: { type: Number, required: false },
-          couple: { type: Number, required: false },
-          family: { type: Number, required: false },
-          singleDescription: { type: String, required: true },
-          singleDescriptionHi: { type: String, required: false },
-          coupleDescription: { type: String, required: true },
-          coupleDescriptionHi: { type: String, required: false },
-          familyDescription: { type: String, required: true },
-          familyDescriptionHi: { type: String, required: false },
+          single: {
+            amaount: Number,
+            description: String,
+            descriptionHi: String,
+          },
+          couple: {
+            amaount: Number,
+            description: String,
+            descriptionHi: String,
+          },
+          family: {
+            amaount: Number,
+            description: String,
+            descriptionHi: String,
+          },
         },
       ],
       required: false,
