@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
@@ -6,48 +7,55 @@ const userRoutes = require("./routes/userRoutes");
 const poojaRoutes = require("./routes/poojaRoutes");
 const templeRoutes = require("./routes/templeRoutes");
 const chadavaRoutes = require("./routes/chadhavaRoutes");
-require("dotenv").config();
 
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const app = express();
-connectDB();
 
-app.use(cors());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+// Connect to MongoDB and wait before starting the server
+(async () => {
+  try {
+    await connectDB();
 
-app.use(express.json());
+    // Middleware
+    app.use(cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    }));
+    app.use(express.json());
 
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Dev Yogam API",
-      version: "1.0.0",
-      description: "API documentation for Dev Yogam (Users & Poojas)",
-    },
-    servers: [{ url: `http://localhost:${process.env.PORT || 5000}` }],
-  },
-  apis: [path.join(__dirname, "./routes/*.js")],
-};
+    // Swagger configuration
+    const swaggerOptions = {
+      swaggerDefinition: {
+        openapi: "3.0.0",
+        info: {
+          title: "Dev Yogam API",
+          version: "1.0.0",
+          description: "API documentation for Dev Yogam (Users & Poojas)",
+        },
+        servers: [{ url: `http://localhost:${process.env.PORT || 5000}` }],
+      },
+      apis: [path.join(__dirname, "./routes/*.js")],
+    };
+    const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-const swaggerSpecs = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+    // Routes
+    app.use("/api/users", userRoutes);
+    app.use("/api/poojas", poojaRoutes);
+    app.use("/api/temples", templeRoutes);
+    app.use("/api/chadhavas", chadavaRoutes);
 
-app.use("/api/users", userRoutes);
-app.use("/api/poojas", poojaRoutes);
-app.use("/api/temples", templeRoutes);
-app.use("/api/chadhavas", chadavaRoutes);
+    app.get("/", (req, res) => {
+      res.send("API is running...");
+    });
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+})();
