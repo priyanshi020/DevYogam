@@ -18,12 +18,15 @@ const app = express();
   try {
     await connectDB();
 
-    // Middleware
-    app.use(cors({
-      origin: "http://localhost:3000",
-      credentials: true,
-    }));
-    app.use(express.json());
+app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
+
+app.use(express.json());
 
     // Swagger configuration
     const swaggerOptions = {
